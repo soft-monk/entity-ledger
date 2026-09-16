@@ -1,0 +1,67 @@
+{
+  "policiesNamespace": "mapapp",
+  "schemaVersion": "1.0.0",
+  "kind": "threatFactors",
+  "items": [
+    {
+      "key": "typeBase",
+      "name": "类型基础威胁",
+      "source": "typeBase",
+      "weight": 0.2,
+      "normalize": { "type": "percent" },
+      "direction": "higher",
+      "missing": "zero"
+    },
+    {
+      "key": "distance",
+      "name": "距任务基准点距离",
+      "source": "distance",
+      "weight": 0.2,
+      "normalize": { "type": "range", "min": 0, "max": 50000 },
+      "direction": "lower",
+      "missing": "zero"
+    },
+    {
+      "key": "state",
+      "name": "动态状态",
+      "source": "state",
+      "weight": 0.2,
+      "normalize": {
+        "type": "table",
+        "table": {
+          "onMove": 1.0,
+          "active": 0.9,
+          "relocating": 0.7,
+          "deploying": 0.6,
+          "briefStop": 0.4,
+          "static": 0.2
+        }
+      },
+      "direction": "higher",
+      "missing": "zero"
+    },
+    {
+      "key": "sourceCount",
+      "name": "多源印证",
+      "source": "sourceCount",
+      "weight": 0.2,
+      "normalize": { "type": "range", "min": 1, "max": 4 },
+      "direction": "higher",
+      "missing": "zero"
+    },
+    {
+      "key": "confidence",
+      "name": "置信度",
+      "source": "confidence",
+      "weight": 0.2,
+      "normalize": { "type": "percent" },
+      "direction": "higher",
+      "missing": "zero"
+    }
+  ],
+  "bands": [
+    { "key": "high", "min": 70, "state": "red" },
+    { "key": "mid", "min": 40, "state": "yellow" },
+    { "key": "low", "min": 0, "state": "gray" }
+  ]
+}

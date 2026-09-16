@@ -1,0 +1,23 @@
+{
+  "policiesNamespace": "mapapp",
+  "schemaVersion": "1.0.0",
+  "kind": "entityTypes",
+  "items": [
+    { "key": "cmdNode", "name": "机动指挥节点", "baseThreat": 0.9 },
+    { "key": "airDefSite", "name": "防空火力阵地", "baseThreat": 0.85 },
+    { "key": "airDefUnit", "name": "防空火力单元", "baseThreat": 0.8 },
+    { "key": "commHub", "name": "通信枢纽节点", "baseThreat": 0.7 },
+    { "key": "commNode", "name": "通信保障节点", "baseThreat": 0.6 },
+    { "key": "logiUnit", "name": "后勤运输车队", "baseThreat": 0.4 }
+  ],
+  "actions": [
+    {
+      "key": "engage-gated",
+      "name": "需要宿主审批的动作",
+      "requires": ["host-approval"],
+      "reversible": true,
+      "once": true,
+      "exclusive": true
+    }
+  ]
+}

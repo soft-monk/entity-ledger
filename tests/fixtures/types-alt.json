@@ -1,0 +1,10 @@
+{
+  "policiesNamespace": "mapbox-alt",
+  "schemaVersion": "1.0.0",
+  "kind": "entityTypes",
+  "items": [
+    { "key": "alphaNode", "name": "alpha node", "baseThreat": 0.5 },
+    { "key": "betaNode", "name": "beta node", "baseThreat": 0.2 }
+  ],
+  "numbering": { "start": 1, "contiguous": true, "reuse": false }
+}

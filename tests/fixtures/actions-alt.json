@@ -1,0 +1,11 @@
+{
+  "policiesNamespace": "mapbox-alt",
+  "schemaVersion": "1.0.0",
+  "kind": "entityTypes",
+  "items": [
+    { "key": "alphaNode", "name": "alpha node", "baseThreat": 0.5 }
+  ],
+  "actions": [
+    { "key": "ping", "name": "ping", "requires": [], "reversible": true, "once": false }
+  ]
+}

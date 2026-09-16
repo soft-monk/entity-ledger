@@ -1,0 +1,130 @@
+{
+  "policiesNamespace": "mapapp",
+  "schemaVersion": "1.0.0",
+  "kind": "entityTypes",
+  "items": [
+    { "key": "cmdNode", "name": "机动指挥节点", "baseThreat": 0.9, "attributes": { "shelter": 0.2 } },
+    { "key": "airDefSite", "name": "防空火力阵地", "baseThreat": 0.85, "attributes": { "shelter": 0.4 } },
+    { "key": "airDefUnit", "name": "防空火力单元", "baseThreat": 0.8, "attributes": { "shelter": 0.3 } },
+    { "key": "commHub", "name": "通信枢纽节点", "baseThreat": 0.7, "attributes": { "shelter": 0.1 } },
+    { "key": "commNode", "name": "通信保障节点", "baseThreat": 0.6, "attributes": { "shelter": 0.1 } },
+    { "key": "logiUnit", "name": "后勤运输车队", "baseThreat": 0.4, "attributes": { "shelter": 0.0 } }
+  ],
+  "numbering": { "start": 1, "contiguous": true, "reuse": false },
+  "geometry": { "formula": "haversine", "earthRadiusM": 6371000 },
+  "reference": { "lng": 118.35, "lat": 24.62 },
+  "dynamicStates": {
+    "items": [
+      { "key": "onMove", "name": "机动中" },
+      { "key": "active", "name": "活跃" },
+      { "key": "deploying", "name": "部署中" },
+      { "key": "relocating", "name": "转移中" },
+      { "key": "briefStop", "name": "短暂停留" },
+      { "key": "static", "name": "静止" }
+    ],
+    "transitions": [
+      { "from": "briefStop", "to": "onMove" },
+      { "from": "onMove", "to": "briefStop" },
+      { "from": "deploying", "to": "active" },
+      { "from": "active", "to": "relocating" },
+      { "from": "relocating", "to": "deploying" },
+      { "from": "static", "to": "onMove" },
+      { "from": "onMove", "to": "static" },
+      { "from": "active", "to": "static" },
+      { "from": "static", "to": "active" }
+    ],
+    "default": "briefStop"
+  },
+  "dedup": {
+    "mode": "conservative",
+    "keys": ["obsKey", "typeKey", "space"],
+    "requireTypeMatch": true,
+    "spaceRadiusM": 300,
+    "timeWindowMs": 600000,
+    "allowManualSplit": true,
+    "onAmbiguous": "separate"
+  },
+  "confidence": {
+    "method": "weighted-mean",
+    "sources": [
+      { "key": "optical", "name": "光电", "weight": 1.0 },
+      { "key": "radar", "name": "雷达", "weight": 1.0 },
+      { "key": "electronic", "name": "电子", "weight": 0.8 },
+      { "key": "fusion", "name": "融合", "weight": 1.2 }
+    ],
+    "multiSourceBonus": 0.05,
+    "maxBonus": 0.1,
+    "defaultSource": "fusion"
+  },
+  "flags": [
+    { "key": "hv", "name": "高价值", "unique": true }
+  ],
+  "views": [
+    {
+      "key": "situation",
+      "name": "综合态势",
+      "phaseFilters": [
+        { "phases": ["T4"], "minConfidence": 0.5 },
+        { "phases": ["T5", "T6"], "minConfidence": 0.4 },
+        { "phases": ["T7"], "minConfidence": 0.3 },
+        { "phases": ["*"], "minConfidence": 0.5 }
+      ]
+    },
+    { "key": "boardA", "name": "T4-1 目标列表", "phaseFilters": [ { "phases": ["*"], "minConfidence": 0.5 } ] },
+    { "key": "boardB", "name": "T4-2 目标列表", "phaseFilters": [ { "phases": ["*"], "minConfidence": 0.4 } ] },
+    { "key": "boardC", "name": "T7-2 目标列表", "phaseFilters": [ { "phases": ["*"], "minConfidence": 0.3 } ] },
+    { "key": "brief", "name": "文字稿", "phaseFilters": [ { "phases": ["*"], "minConfidence": 0.3 } ] },
+    { "key": "hvBoard", "name": "高价值面板", "phaseFilters": [ { "phases": ["*"], "requireFlags": ["hv"] } ] },
+    {
+      "key": "commandChain",
+      "name": "指挥链视图",
+      "phaseFilters": [
+        { "phases": ["*"], "includeTypes": ["cmdNode", "commHub", "commNode"], "minConfidence": 0.3 }
+      ]
+    }
+  ],
+  "actions": [
+    { "key": "watch", "name": "重点监视", "requires": [], "reversible": true, "once": false, "exclusive": false },
+    { "key": "track", "name": "持续跟踪", "requires": [], "reversible": true, "once": false, "exclusive": false },
+    {
+      "key": "upgrade",
+      "name": "升级为打击目标",
+      "requires": [],
+      "setsFlags": ["hv"],
+      "setsPriority": true,
+      "priorityValue": 1,
+      "reversible": true,
+      "once": true,
+      "exclusive": true,
+      "undoWithinMs": 3600000
+    },
+    {
+      "key": "strike",
+      "name": "打击",
+      "requires": ["$action:upgrade", "$in-sequence"],
+      "reversible": false,
+      "once": true,
+      "exclusive": true
+    },
+    {
+      "key": "reassess",
+      "name": "复核评估",
+      "requires": ["$confidence-min:0.5"],
+      "reversible": true,
+      "once": false,
+      "exclusive": false
+    }
+  ],
+  "relations": {
+    "kinds": [
+      { "key": "command", "name": "指挥", "cyclic": false },
+      { "key": "supply", "name": "保障", "cyclic": false },
+      { "key": "peer", "name": "协同", "cyclic": true }
+    ],
+    "states": [
+      { "key": "confirmed", "name": "已确认" },
+      { "key": "suspected", "name": "疑似" }
+    ],
+    "default": "confirmed"
+  }
+}
