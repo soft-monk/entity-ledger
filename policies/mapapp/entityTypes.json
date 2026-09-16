@@ -25,7 +25,10 @@
       { "key": "deploying", "name": "部署中" },
       { "key": "relocating", "name": "转移中" },
       { "key": "briefStop", "name": "短暂停留" },
-      { "key": "static", "name": "静止" }
+      { "key": "static", "name": "静止" },
+
+      { "key": "struck", "name": "已打击（待评估）" },
+      { "key": "destroyed", "name": "已摧毁（终态）" }
     ],
     "transitions": [
       { "from": "briefStop", "to": "onMove" },
@@ -36,7 +39,13 @@
       { "from": "static", "to": "onMove" },
       { "from": "onMove", "to": "static" },
       { "from": "active", "to": "static" },
-      { "from": "static", "to": "active" }
+      { "from": "static", "to": "active" },
+
+      { "from": "static", "to": "struck" },
+      { "from": "briefStop", "to": "struck" },
+      { "from": "active", "to": "struck" },
+      { "from": "onMove", "to": "struck" },
+      { "from": "struck", "to": "destroyed" }
     ],
     "default": "briefStop"
   },
