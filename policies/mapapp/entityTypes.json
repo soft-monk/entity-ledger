@@ -8,7 +8,12 @@
     { "key": "airDefUnit", "name": "防空火力单元", "baseThreat": 0.8, "attributes": { "shelter": 0.3 } },
     { "key": "commHub", "name": "通信枢纽节点", "baseThreat": 0.7, "attributes": { "shelter": 0.1 } },
     { "key": "commNode", "name": "通信保障节点", "baseThreat": 0.6, "attributes": { "shelter": 0.1 } },
-    { "key": "logiUnit", "name": "后勤运输车队", "baseThreat": 0.4, "attributes": { "shelter": 0.0 } }
+    { "key": "logiUnit", "name": "后勤运输车队", "baseThreat": 0.4, "attributes": { "shelter": 0.0 } },
+
+    { "key": "optical", "name": "我方·光电无人机", "baseThreat": 0.0, "attributes": { "shelter": 0.0 } },
+    { "key": "radar", "name": "我方·雷达无人机", "baseThreat": 0.0, "attributes": { "shelter": 0.0 } },
+    { "key": "electronic", "name": "我方·电子对抗无人机", "baseThreat": 0.0, "attributes": { "shelter": 0.0 } },
+    { "key": "comm", "name": "我方·通信中继无人机", "baseThreat": 0.0, "attributes": { "shelter": 0.0 } }
   ],
   "numbering": { "start": 1, "contiguous": true, "reuse": false },
   "geometry": { "formula": "haversine", "earthRadiusM": 6371000 },
